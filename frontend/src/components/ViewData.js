@@ -109,44 +109,57 @@ const ViewData = () => {
       showNotification('excel', 'Excel data is not available.');
       return;
     }
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    // Add the ID column manually
+    const modifiedData = filteredData.map((item, index) => ({
+      ID: index + 1,
+      Name: item.name,
+      Email: item.email,
+      Contact_No: item.contact_no,
+      Gender: item.gender,
+      Address: item.address,
+    }));
+    
+    const worksheet = XLSX.utils.json_to_sheet(modifiedData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'User Data');
     XLSX.writeFile(workbook, 'UserData.xlsx');
     showNotification('excel', 'Excel file has been downloaded successfully.');
   };
+  
 
   const handleExportPdf = () => {
     if (filteredData.length === 0) {
       showNotification('pdf', 'PDF data not available.');
       return;
     }
+    
     const doc = new jsPDF();
     const tableColumn = ["ID", "Name", "Email", "Contact No", "Gender", "Address"];
     const tableRows = [];
-
-    filteredData.forEach(item => {
+  
+    // Add the ID manually
+    filteredData.forEach((item, index) => {
       const itemData = [
-        item.id,
-        item.name,
-        item.email,
-        item.contact_no,
-        item.gender,
-        item.address
+        index + 1, // ID starts from 1
+        item.name || 'Not Available',
+        item.email || 'Not Available',
+        item.contact_no || 'Not Available',
+        item.gender || 'Not Available',
+        item.address || 'Not Available'
       ];
       tableRows.push(itemData);
     });
-
+  
     doc.autoTable({
       head: [tableColumn],
       body: tableRows,
       startY: 20,
     });
-
+  
     doc.save('UserData.pdf');
     showNotification('pdf', 'PDF file has been downloaded successfully.');
   };
-
+  
   const handleBack = () => {
     navigate('/home');
   };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -14,9 +14,10 @@ const Login = () => {
   });
 
   const [errorMessage, setErrorMessage] = useState(''); // State for displaying login error messages
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState(''); // State for success message
   const navigate = useNavigate(); // Hook to programmatically navigate
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -32,6 +33,7 @@ const Login = () => {
     setErrorMessage(''); // Clear any error message when input changes
   };
 
+  // Validate form inputs
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email.trim()) newErrors.email = 'Email is required';
@@ -43,6 +45,7 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
@@ -62,6 +65,18 @@ const Login = () => {
       }
     }
   };
+
+  // Clear success or error message after 3 seconds
+  useEffect(() => {
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 3000); // 3 seconds delay
+
+      return () => clearTimeout(timer); // Clear timeout if the component unmounts
+    }
+  }, [successMessage, errorMessage]);
 
   return (
     <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-lg">
