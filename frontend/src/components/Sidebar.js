@@ -10,7 +10,7 @@ const Sidebar = () => {
         </li>
         <li className="mb-4 flex items-center">
           <i className="fas fa-user mr-2"></i>
-          <a href="#" className="hover:text-blue-400">Profile</a>
+          <a href="#" className="hover:text-blue-400">User</a>
         </li>
         <li className="mb-4 flex items-center">
           <i className="fas fa-cog mr-2"></i>
